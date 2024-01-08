@@ -1,6 +1,7 @@
 const { create } = require('domain');
 const createGameBoard = require('../src/gameboard/gameboard.js');
 const createShip = require('../src/ship/ship.js');
+const { findCacheDir } = require('webpack-dev-server');
 
 describe("GameBoard object", () => {
     let gameBoard;
@@ -23,17 +24,17 @@ describe("GameBoard object", () => {
         const coordinates = { x: 1, y: 1};
         const ship = createShip(3);
         gameBoard.addShip(ship, coordinates.x, coordinates.y, 'horizontal');
-        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y)).toEqual({ type: 'ship'})
-        expect(gameBoard.findCoordinates(coordinates.x + 1, coordinates.y)).toEqual({ type: 'ship'})
-        expect(gameBoard.findCoordinates(coordinates.x + 2, coordinates.y)).toEqual({ type: 'ship'})
+        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y)).toEqual({ type: 'ship', value: ship})
+        expect(gameBoard.findCoordinates(coordinates.x + 1, coordinates.y)).toEqual({ type: 'ship', value: ship})
+        expect(gameBoard.findCoordinates(coordinates.x + 2, coordinates.y)).toEqual({ type: 'ship', value: ship})
     })
     it("can add ships to given coordinates vertically", () => {
         const coordinates = { x: 1, y: 1};
         const ship = createShip(3);
         gameBoard.addShip(ship, coordinates.x, coordinates.y, 'vertical');
-        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y)).toEqual({ type: 'ship'})
-        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y + 1)).toEqual({ type: 'ship'})
-        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y + 2)).toEqual({ type: 'ship'})
+        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y)).toEqual({ type: 'ship', value: ship})
+        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y + 1)).toEqual({ type: 'ship', value: ship})
+        expect(gameBoard.findCoordinates(coordinates.x, coordinates.y + 2)).toEqual({ type: 'ship', value: ship})
     })
     it("cannot add ships beyond board constraints", () => {
         const coordinates = { x: 9, y: 1};
@@ -46,5 +47,33 @@ describe("GameBoard object", () => {
         const ship = createShip(3);
         gameBoard.addShip(ship, coordinates.x, coordinates.y, 'vertical')
         expect(gameBoard.findCoordinates(coordinates.x, coordinates.y).type).toEqual("empty");
+    })
+    it("returns the list of ships on the game board", () => {
+        const ship1 = createShip(3);
+        const ship2 = createShip(2);
+        gameBoard.addShip(ship1, 1, 1, "horizontal");
+        gameBoard.addShip(ship2, 4, 4, "vertical");
+        expect(gameBoard.getShips()).toEqual([ship1, ship2]);
+    });
+    it("can take a hit", () => {
+        gameBoard.takeHit(1, 2);
+        expect(gameBoard.findCoordinates(1, 2).type).toBe("miss");
+    })
+    it("can tell if a ship was hit", () => {
+        const ship = createShip(3);
+        gameBoard.addShip(ship, 1, 2, 'horizontal');
+        gameBoard.takeHit(1, 2);
+        expect(gameBoard.findCoordinates(1, 2)).toEqual({ type: "hit", value: ship});
+        expect(ship.getHp()).toBe(2);
+    })
+    it("cannot receive attack on the same tile twice", () => {
+        const ship = createShip(1);
+        gameBoard.addShip(ship, 4, 5, "horizontal");
+        // attack empty tile
+        gameBoard.takeHit(1, 2);
+        // attack ship tile
+        gameBoard.takeHit(4, 5);
+        expect(() => {gameBoard.takeHit(1, 2)}).toThrow("already attacked this tile");
+        expect(() => {gameBoard.takeHit(4, 5)}).toThrow("already attacked this tile");
     })
 })

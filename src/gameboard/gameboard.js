@@ -3,7 +3,7 @@ const createShip = require('../ship/ship.js')
 
 const createGameBoard = function () {
     const coordinates = new Array(10).fill(null).map(() => {
-        return (new Array(10).fill(null).map(() => ({ type: "empty" })))
+        return (new Array(10).fill(null).map(() => ({ type: "empty", value: null })))
     });
     const getCoordinates = () => { return coordinates }
     const findCoordinates = (x, y) => { 
@@ -23,7 +23,8 @@ const createGameBoard = function () {
             return;
         }
 
-        addShipToBoard(coords);
+				ships.push(ship);
+        addShipToBoard(ship, coords);
     }
 
     const calculateShipCoordinates = (length, x, y, direction) => {
@@ -44,11 +45,33 @@ const createGameBoard = function () {
         return coords;
     }
     
-    const addShipToBoard = (coords) => {
-        coords.forEach((e) => e.type = "ship");
+    const addShipToBoard = (ship, coords) => {
+        coords.forEach((e) => {
+					e.type = "ship";
+					e.value = ship;
+				});
     }
 
-    return { getCoordinates, findCoordinates, getShips, addShip }
+    const takeHit = (x, y) => {
+        let coords;
+        try{
+      		coords = findCoordinates(x, y);
+					if (coords.type === "hit" || coords.type === "miss") throw new Error("already attacked this tile")
+					if(coords.type === "ship") {
+						coords.type = "hit"
+						coords.value.takeDamage();
+					} 
+					else { 
+						coords.type = "miss"
+					}
+        } 
+				catch(e) { 
+					console.warn(`${e}`)
+					throw e
+			 }
+    }
+
+    return { getCoordinates, findCoordinates, getShips, addShip, takeHit }
 }
 
 module.exports = createGameBoard;
