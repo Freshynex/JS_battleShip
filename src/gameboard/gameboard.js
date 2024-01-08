@@ -18,18 +18,18 @@ const createGameBoard = function () {
         const length = ship.getShipLength()
         const coords = calculateShipCoordinates(length, x, y, direction);
 
-        if (coords === null) {
-            // Handle invalid move
+        if (coords === null || coords.some((e) => { return e.type === 'ship'})) {
+            console.warn("invalid move");
             return;
         }
-
-				ships.push(ship);
+        
+		ships.push(ship);
         addShipToBoard(ship, coords);
     }
 
     const calculateShipCoordinates = (length, x, y, direction) => {
         const coords = [];
-        for(let i = 0; i <= length; i++) {
+        for(let i = 0; i <= length - 1; i++) {
             try {
                 if(direction === "horizontal"){
                     // findCoordinate will throw an error if board limit is reached
