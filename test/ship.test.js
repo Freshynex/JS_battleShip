@@ -12,8 +12,8 @@ describe("Ship object", () => {
 		let ship = createShip(2);
 		// full health
 		expect(ship.getHp()).toEqual(2);
-    ship.takeDamage();
 		// 1 damage
+		ship.takeDamage();
 		expect(ship.getHp()).toEqual(1);
   });
 
