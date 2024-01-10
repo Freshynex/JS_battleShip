@@ -1,4 +1,8 @@
 const createPlayer = function (name, type, gameBoard) {
+  let ai = null;
+  if (type === "ai") {
+    ai = createAi();
+  }
   if (!name || name === "") throw new Error("please input a name");
   const playerName = name;
   const getPlayerName = () => {
@@ -32,7 +36,31 @@ const createPlayer = function (name, type, gameBoard) {
     getShips,
     addShip,
     attackBoard,
+    ai,
   };
+};
+
+const createAi = function () {
+  const shotTiles = [];
+
+  const getShotTiles = () => {
+    return shotTiles;
+  };
+
+  const registerShotTile = (tile) => {
+    tilesShotAt.push(tile);
+  };
+
+  const makeRandomMove = (gameBoard) => {};
+
+  const placeRandomShip = (ship, gameBoard) => {
+    const x = 3;
+    const y = 4;
+
+    gameBoard.addShip(ship, x, y, "horizontal");
+  };
+
+  return { placeRandomShip, makeRandomMove, registerShotTile, getShotTiles };
 };
 
 module.exports = createPlayer;

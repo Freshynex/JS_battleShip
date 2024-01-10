@@ -27,3 +27,23 @@ describe("Player", () => {
     }).toThrow();
   });
 });
+
+describe("AI", () => {
+  let gameBoard;
+  let aiPlayer;
+
+  beforeEach(() => {
+    gameBoard = createGameBoard();
+    aiPlayer = createPlayer("fasz janos", "ai", gameBoard);
+  });
+
+  it("gets ai functionality when appropriate", () => {
+    expect(aiPlayer.ai).toHaveProperty("makeRandomMove");
+  });
+  // NOT YET RANDOM
+  it("is capable of placing a random ship", () => {
+    const ship = createShip(2);
+    aiPlayer.ai.placeRandomShip(ship, gameBoard);
+    expect(gameBoard.findCoordinates(3, 4).value).toBe(ship);
+  });
+});
