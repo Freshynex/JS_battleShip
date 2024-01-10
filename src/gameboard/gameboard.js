@@ -76,7 +76,6 @@ const createGameBoard = function () {
         coords.type = "miss";
       }
     } catch (e) {
-      console.warn(`${e}`);
       throw e;
     }
   };

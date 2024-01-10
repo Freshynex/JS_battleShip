@@ -20,4 +20,10 @@ describe("Player", () => {
       player1.placeShip(ship, 9, 8, "horizontal");
     }).toThrow("out of bounds");
   });
+  it("can't attack tile that has been attacked", () => {
+    player1.attackBoard(gameBoard, 1, 1);
+    expect(() => {
+      player1.attackBoard(gameBoard, 1, 1);
+    }).toThrow();
+  });
 });

@@ -17,11 +17,22 @@ const createPlayer = function (name, type, gameBoard) {
     ships.push(ship);
   };
 
+  const attackBoard = (board, x, y) => {
+    board.takeHit(x, y);
+  };
+
   const placeShip = (ship, x, y, direction) => {
     gameBoard.addShip(ship, x, y, direction);
   };
 
-  return { getPlayerName, getPlayerType, placeShip, getShips, addShip };
+  return {
+    getPlayerName,
+    getPlayerType,
+    placeShip,
+    getShips,
+    addShip,
+    attackBoard,
+  };
 };
 
 module.exports = createPlayer;
