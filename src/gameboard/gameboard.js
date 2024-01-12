@@ -35,15 +35,15 @@ const createGameBoard = function () {
     addShipToBoard(ship, coords);
   };
 
-  const calculateShipCoordinates = (length, x, y, direction) => {
+  const calculateShipCoordinates = (length, y, x, direction) => {
     const coords = [];
-    for (let i = 0; i <= length; i++) {
+    for (let i = 0; i < length; i++) {
       try {
         if (direction === "horizontal") {
           // findCoordinate will throw an error if board limit is reached
-          coords.push(findCoordinates(x + i, y));
-        } else if (direction === "vertical") {
           coords.push(findCoordinates(x, y + i));
+        } else if (direction === "vertical") {
+          coords.push(findCoordinates(x + i, y));
         } else {
           throw new Error("invalid direction");
         }

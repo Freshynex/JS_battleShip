@@ -4,6 +4,11 @@ const createPlayer = function (name, type, gameBoard) {
   if (type === "ai") {
     ai = createAi();
   }
+
+  const getGameBoard = () => {
+    return gameBoard;
+  };
+
   // check name exists
   if (!name || name === "") throw new Error("please input a name");
   const playerName = name;
@@ -16,10 +21,15 @@ const createPlayer = function (name, type, gameBoard) {
     return type;
   };
 
-  const ships = [];
+  let ships = [];
   const getShips = () => {
     return ships;
   };
+
+  const setShips = (inputShips) => {
+    ships = inputShips;
+  };
+
   const addShip = (ship) => {
     ships.push(ship);
   };
@@ -35,10 +45,12 @@ const createPlayer = function (name, type, gameBoard) {
   return {
     getPlayerName,
     getPlayerType,
+    getGameBoard,
     placeShip,
     getShips,
     addShip,
     attackBoard,
+    setShips,
     ai,
   };
 };
