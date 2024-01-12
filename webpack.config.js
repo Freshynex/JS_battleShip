@@ -2,6 +2,7 @@
 
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 const isProduction = process.env.NODE_ENV == "production";
 
@@ -16,13 +17,19 @@ const config = {
     open: true,
     host: "localhost",
   },
+
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",
     }),
 
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+    // this is needed so babel does not throw some retarded error about process not being defined
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+    }),
   ],
   module: {
     rules: [
