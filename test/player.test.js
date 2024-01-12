@@ -8,7 +8,12 @@ describe("Player", () => {
   beforeEach(() => {
       gameBoard = createGameBoard();
   })
-
+  it("name cannot be empty", () => {
+    expect(() => {createPlayer("", "human", gameBoard)}).toThrow("name must be given");
+  })
+  it("type must be human or computer", () => {
+    expect(() => createPlayer("jozsi", "fasz", gameBoard)).toThrow('must be human or computer');
+  })
   it("cannot place ship out of bounds", () => {
     const player = createPlayer("jozsi", "human", gameBoard);
 

@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --verbose --watchAll --testPathPattern=test/player.test.js",
+    "test": "jest --watchAll --testPathPattern=test/player.test.js --verbose ",
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",

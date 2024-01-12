@@ -1,7 +1,7 @@
-const createGame = function(player1, player2) {
-  const playerOne = player1;
-  const playerTwo = player2;
-
+const createGame = function() {
+  let playerOne;
+  let playerTwo;
+  
   const getPlayers = () => { return [ playerOne, playerTwo ]}
 
   const hasLost = (player) => { 
@@ -11,7 +11,12 @@ const createGame = function(player1, player2) {
     }
   }
 
-  return { getPlayers, hasLost }
+  const initialize = (player1, player2) => {
+    playerOne = player1;
+    playerTwo = player2;
+  }
+
+  return { getPlayers, hasLost, initialize }
 } 
 
 module.exports = createGame;
