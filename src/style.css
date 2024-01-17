@@ -15,13 +15,15 @@ body {
 
 #playerOneBoard,
 #playerTwoBoard {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid: repeat(10, 48px) / repeat(10, 48px);
+  grid-auto-flow: column;
+  place-content: center;
+  gap: 2px;
   width: 40%;
 }
 
 .tile {
-  width: 10%;
   background-color: tomato;
 }
 

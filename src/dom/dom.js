@@ -10,8 +10,6 @@ const domController = (function () {
     let length = 0;
 
     tiles.forEach((row, rowIndex) => {
-      let colDiv = document.createElement("div");
-      colDiv.classList.add("tile");
       row.forEach((col, colIndex) => {
         let tileDiv = document.createElement("div");
         tileDiv.classList.add("tile", "empty");
@@ -20,9 +18,8 @@ const domController = (function () {
         tileDiv.textContent = col.type;
         // `${colIndex} - ${rowIndex}`;
         length += 1;
-        colDiv.appendChild(tileDiv);
+        container.appendChild(tileDiv);
       });
-      container.appendChild(colDiv);
     });
     console.log(length);
   };
@@ -36,6 +33,7 @@ const domController = (function () {
   const updateTile = (newValue, y, x) => {
     let tile = findTileNode(x, y);
     tile.className = `tile ${newValue}`;
+    tile.textContent = newValue
   };
 
   return { displayGameBoard, updateTile };
