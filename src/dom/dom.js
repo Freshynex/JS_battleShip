@@ -10,6 +10,8 @@ const domController = (function () {
     let length = 0;
 
     tiles.forEach((row, rowIndex) => {
+      let colDiv = document.createElement("div");
+      colDiv.classList.add("tile");
       row.forEach((col, colIndex) => {
         let tileDiv = document.createElement("div");
         tileDiv.classList.add("tile", "empty");
@@ -17,23 +19,23 @@ const domController = (function () {
         // y          // x
         tileDiv.textContent = col.type;
         // `${colIndex} - ${rowIndex}`;
-        container.appendChild(tileDiv);
         length += 1;
+        colDiv.appendChild(tileDiv);
       });
+      container.appendChild(colDiv);
     });
     console.log(length);
   };
 
-  const findTile = (gameBoard, y, x) => {
+  const findTileNode = (x, y) => {
     // let selector = "#" + y + x;
-    const tile = document.getElementById("00");
+    const tile = document.getElementById(`${x}${y}`);
     return tile;
   };
 
-  const updateTile = (gameBoard, y, x) => {
-    let tileData = gameBoard.findCoordinates(y, x);
-    let tileDomElement = findTile(gameBoard, y, x);
-    tileDomElement.className = `tile ${tileData.type}`;
+  const updateTile = (newValue, y, x) => {
+    let tile = findTileNode(x, y);
+    tile.className = `tile ${newValue}`;
   };
 
   return { displayGameBoard, updateTile };

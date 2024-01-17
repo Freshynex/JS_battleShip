@@ -21,7 +21,6 @@ body {
 }
 
 .tile {
-  padding: 12px;
   width: 10%;
   background-color: tomato;
 }

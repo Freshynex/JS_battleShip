@@ -1,5 +1,6 @@
 const { directive } = require("@babel/types");
 const createShip = require("../ship/ship.js");
+const domController = require("../dom/dom.js");
 
 const createGameBoard = function () {
   const coordinates = new Array(10).fill(null).map(() => {
@@ -12,7 +13,7 @@ const createGameBoard = function () {
     if (x >= coordinates.length || y >= coordinates.length) {
       throw new Error("out of bounds");
     }
-    return coordinates[x][y];
+    return { coordinates: [x, y], tileContent: coordinates[x][y] };
   };
 
   const ships = [];
@@ -35,15 +36,15 @@ const createGameBoard = function () {
     addShipToBoard(ship, coords);
   };
 
-  const calculateShipCoordinates = (length, y, x, direction) => {
+  const calculateShipCoordinates = (length, x, y, direction) => {
     const coords = [];
     for (let i = 0; i < length; i++) {
       try {
         if (direction === "horizontal") {
           // findCoordinate will throw an error if board limit is reached
-          coords.push(findCoordinates(x, y + i));
-        } else if (direction === "vertical") {
           coords.push(findCoordinates(x + i, y));
+        } else if (direction === "vertical") {
+          coords.push(findCoordinates(x, y + i));
         } else {
           throw new Error("invalid direction");
         }
@@ -58,8 +59,9 @@ const createGameBoard = function () {
 
   const addShipToBoard = (ship, coords) => {
     coords.forEach((e) => {
-      e.type = "ship";
-      e.value = ship;
+      domController.updateTile("ship", e.coordinates[0], e.coordinates[1]);
+      e.tileContent.type = "ship";
+      e.tileContent.value = ship;
     });
   };
 

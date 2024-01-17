@@ -1,3 +1,5 @@
+const domController = require("../dom/dom");
+
 const createPlayer = function (name, type, gameBoard) {
   // add ai object if needed
   let ai = null;

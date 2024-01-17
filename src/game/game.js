@@ -23,13 +23,12 @@ const createGame = function (player1, player2) {
 
   const initialize = () => {
     createPlayerShips(playerOne);
-    playerOne.placeShip(playerOne.getShips()[0], 0, 0, "horizontal");
-    playerOne.placeShip(playerOne.getShips()[0], 0, 1, "vertical");
+    createPlayerShips(playerTwo);
+    // playerOne.placeShip(playerOne.getShips()[0], 1, 0, "horizontal");
 
     domController.displayGameBoard(playerOneGameBoard, 1);
     domController.displayGameBoard(playerTwoGameBoard, 2);
-    console.log(playerOne.getShips());
-    domController.updateTile(playerOneGameBoard, 0, 1);
+    playerOne.placeShip(playerOne.getShips()[0], 0, 0, "vertical");
   };
   // 1 x 4 , 2 x 3 , 3 x 2 , 4 x 1
   const createPlayerShips = (player) => {
