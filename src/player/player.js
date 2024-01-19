@@ -11,7 +11,7 @@ const createPlayer = function (name, type, gameBoard) {
   let nextShipToPlace = 0;
   const getNextShipToPlace = () => {
     return nextShipToPlace;
-  }
+  };
 
   const getGameBoard = () => {
     return gameBoard;
@@ -32,7 +32,7 @@ const createPlayer = function (name, type, gameBoard) {
   const playerNumber = nextPlayerNumber;
   const getPlayerNumber = () => {
     return playerNumber;
-  }
+  };
 
   let ships = [];
   const getShips = () => {
@@ -47,17 +47,22 @@ const createPlayer = function (name, type, gameBoard) {
     ships.push(ship);
   };
 
-  const attackBoard = (board, x, y) => {
-    board.takeHit(x, y);
+  const attackBoard = (p, board, x, y) => {
+    console.log(p);
+    // console.log(
+    //   `attacking board of ${p.getPlayerNumber()}, at x: ${x} and y: ${y}`
+    // );
+    board.takeHit(p, x, y);
   };
 
   const placeShip = (p, ship, x, y, direction) => {
     try {
-      gameBoard.addShip(p, ship, x, y, direction)
+      gameBoard.addShip(p, ship, x, y, direction);
       nextShipToPlace += 1;
       domController.clearErrors();
+    } catch (e) {
+      domController.displayError(e);
     }
-    catch(e) { domController.displayError(e); };
   };
 
   nextPlayerNumber++;

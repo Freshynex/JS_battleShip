@@ -15,7 +15,7 @@ const domController = (function () {
         let tileDiv = document.createElement("div");
         tileDiv.classList.add("tile", "empty");
         tileDiv.id = `p${player}-${colIndex}${rowIndex}`;
-        tileDiv.dataset.coordinates = `${rowIndex}-${colIndex}`
+        tileDiv.dataset.coordinates = `${rowIndex}-${colIndex}`;
         tileDiv.addEventListener("click", tileClickedFunction);
         // y          // x
         tileDiv.textContent = col.type;
@@ -29,7 +29,7 @@ const domController = (function () {
 
   const displayError = (e) => {
     errorField.textContent = e;
-  }
+  };
 
   const findTileNode = (p, x, y) => {
     // let selector = "#" + y + x;
@@ -38,13 +38,14 @@ const domController = (function () {
   };
 
   const clearErrors = () => {
-    errorField.textContent = '';
-  }
+    errorField.textContent = "";
+  };
 
   const updateTile = (p, newValue, x, y) => {
     let tile = findTileNode(p, x, y);
+    console.log(tile);
     tile.className = `tile ${newValue}`;
-    tile.textContent = newValue
+    tile.textContent = newValue;
   };
 
   return { displayGameBoard, updateTile, displayError, clearErrors };

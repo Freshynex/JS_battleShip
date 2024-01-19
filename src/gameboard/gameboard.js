@@ -10,7 +10,6 @@ const createGameBoard = function () {
     return coordinates;
   };
   const findCoordinates = (x, y) => {
-    console.log(x, y)
     if (x >= coordinates.length || y >= coordinates.length) {
       throw new Error("out of bounds");
     }
@@ -39,7 +38,7 @@ const createGameBoard = function () {
 
   const calculateShipCoordinates = (length, x, y, direction) => {
     const coords = [];
-    
+
     for (let i = 0; i < length; i++) {
       try {
         if (direction === "horizontal") {
@@ -67,7 +66,7 @@ const createGameBoard = function () {
     });
   };
 
-  const takeHit = (x, y) => {
+  const takeHit = (p, x, y) => {
     let coords;
     try {
       coords = findCoordinates(x, y);
@@ -80,6 +79,8 @@ const createGameBoard = function () {
         return true;
       } else {
         tile.type = "miss";
+        domController.updateTile(p, "shot", x, y);
+
         return false;
       }
     } catch (e) {
