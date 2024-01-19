@@ -69,13 +69,20 @@ const createGameBoard = function () {
     let coords;
     try {
       coords = findCoordinates(x, y);
-      if (coords.type === "hit" || coords.type === "miss")
+      const tile = coords.tileContent;
+      console.log(coords);
+      if (tile.type === "hit" || tile.type === "miss") {
         throw new Error("already attacked this tile");
-      if (coords.type === "ship") {
-        coords.type = "hit";
-        coords.value.takeDamage();
+      }
+
+      if (tile.type === "ship") {
+        tile.type = "hit";
+        tile.value.takeDamage();
+        console.log("shipet kene returnolni");
+        return true;
       } else {
-        coords.type = "miss";
+        tile.type = "miss";
+        return false;
       }
     } catch (e) {
       throw e;

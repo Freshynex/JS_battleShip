@@ -1,4 +1,5 @@
 const domController = require("../dom/dom");
+let nextPlayerNumber = 1;
 
 const createPlayer = function (name, type, gameBoard) {
   // add ai object if needed
@@ -9,6 +10,11 @@ const createPlayer = function (name, type, gameBoard) {
 
   const getGameBoard = () => {
     return gameBoard;
+  };
+
+  const playerNumber = nextPlayerNumber;
+  const getPlayerNumber = () => {
+    return playerNumber;
   };
 
   // check name exists
@@ -36,15 +42,30 @@ const createPlayer = function (name, type, gameBoard) {
     ships.push(ship);
   };
 
-  const attackBoard = (board, x, y) => {
-    board.takeHit(x, y);
-  };
-
   const placeShip = (ship, x, y, direction) => {
     gameBoard.addShip(ship, x, y, direction);
   };
 
+  const attackBoard = (board, x, y) => {
+    const result = board.takeHit(x, y);
+    console.log("result " + result);
+    if (result === true) {
+      shotTiles.hits.push([x, y]);
+    } else if (result === false) {
+      shotTiles.misses.push([x, y]);
+    }
+  };
+
+  const shotTiles = { misses: [], hits: [] };
+  const getShotTiles = () => {
+    return shotTiles;
+  };
+
+  nextPlayerNumber += 1;
+
   return {
+    getShotTiles,
+    getPlayerNumber,
     getPlayerName,
     getPlayerType,
     getGameBoard,
@@ -59,10 +80,11 @@ const createPlayer = function (name, type, gameBoard) {
 // added to player object if needed
 const createAi = function () {
   // so Ai does not shoot same tile twice
-  const shotTiles = [];
 
-  const getShotTiles = () => {
-    return shotTiles;
+  // code extension idea JS plugin that automatically makes a getter / setter like in html
+  const placedTiles = [];
+  const getPlacedTiles = () => {
+    return placedTiles;
   };
 
   const registerShotTile = (x, y) => {
@@ -98,7 +120,12 @@ const createAi = function () {
     }
   };
 
-  return { placeRandomShip, makeRandomMove, registerShotTile, getShotTiles };
+  return {
+    placeRandomShip,
+    makeRandomMove,
+    registerShotTile,
+    getPlacedTiles,
+  };
 };
 
 module.exports = createPlayer;
