@@ -1,8 +1,9 @@
 const domController = (function () {
   const playerOneBoardContainer = document.querySelector("#playerOneBoard");
   const playerTwoBoardContainer = document.querySelector("#playerTwoBoard");
+  const errorField = document.getElementById("error");
 
-  const displayGameBoard = (gameBoard, player) => {
+  const displayGameBoard = (gameBoard, player, tileClickedFunction) => {
     let container =
       player === 1 ? playerOneBoardContainer : playerTwoBoardContainer;
     const tiles = gameBoard.getCoordinates();
@@ -13,7 +14,9 @@ const domController = (function () {
       row.forEach((col, colIndex) => {
         let tileDiv = document.createElement("div");
         tileDiv.classList.add("tile", "empty");
-        tileDiv.id = `${colIndex}${rowIndex}`;
+        tileDiv.id = `p${player}-${colIndex}${rowIndex}`;
+        tileDiv.dataset.coordinates = `${rowIndex}-${colIndex}`
+        tileDiv.addEventListener("click", tileClickedFunction);
         // y          // x
         tileDiv.textContent = col.type;
         // `${colIndex} - ${rowIndex}`;
@@ -24,19 +27,27 @@ const domController = (function () {
     console.log(length);
   };
 
-  const findTileNode = (x, y) => {
+  const displayError = (e) => {
+    errorField.textContent = e;
+  }
+
+  const findTileNode = (p, x, y) => {
     // let selector = "#" + y + x;
-    const tile = document.getElementById(`${x}${y}`);
+    const tile = document.getElementById(`p${p}-${x}${y}`);
     return tile;
   };
 
-  const updateTile = (newValue, y, x) => {
-    let tile = findTileNode(x, y);
+  const clearErrors = () => {
+    errorField.textContent = '';
+  }
+
+  const updateTile = (p, newValue, x, y) => {
+    let tile = findTileNode(p, x, y);
     tile.className = `tile ${newValue}`;
     tile.textContent = newValue
   };
 
-  return { displayGameBoard, updateTile };
+  return { displayGameBoard, updateTile, displayError, clearErrors };
 })();
 
 module.exports = domController;

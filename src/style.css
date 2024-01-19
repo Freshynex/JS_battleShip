@@ -8,8 +8,19 @@ body {
   background-color: gray;
 }
 
+#test-field {
+  text-align: center;
+}
+
+#error {
+  text-align: center;
+  height: 24px;
+  color: darkred;
+}
+
 #boardsContainer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
 }
 
@@ -20,7 +31,8 @@ body {
   grid-auto-flow: column;
   place-content: center;
   gap: 2px;
-  width: 40%;
+  min-width: 40%;
+  margin: 24px;
 }
 
 .tile {

@@ -10,6 +10,7 @@ const createGameBoard = function () {
     return coordinates;
   };
   const findCoordinates = (x, y) => {
+    console.log(x, y)
     if (x >= coordinates.length || y >= coordinates.length) {
       throw new Error("out of bounds");
     }
@@ -21,30 +22,31 @@ const createGameBoard = function () {
     return ships;
   };
 
-  const addShip = (ship, x, y, direction) => {
+  const addShip = (p, ship, x, y, direction) => {
     const length = ship.getShipLength();
     const coords = calculateShipCoordinates(length, x, y, direction);
 
     if (coords === null) {
       // Handle invalid move
       throw new Error("out of bounds");
-    } else if (coords.some((tile) => tile.type === "ship")) {
+    } else if (coords.some((tile) => tile.tileContent.type === "ship")) {
       throw new Error("ship already present on selected tile");
     }
 
     ships.push(ship);
-    addShipToBoard(ship, coords);
+    addShipToBoard(p, ship, coords);
   };
 
   const calculateShipCoordinates = (length, x, y, direction) => {
     const coords = [];
+    
     for (let i = 0; i < length; i++) {
       try {
         if (direction === "horizontal") {
           // findCoordinate will throw an error if board limit is reached
-          coords.push(findCoordinates(x + i, y));
-        } else if (direction === "vertical") {
           coords.push(findCoordinates(x, y + i));
+        } else if (direction === "vertical") {
+          coords.push(findCoordinates(x + i, y));
         } else {
           throw new Error("invalid direction");
         }
@@ -57,9 +59,9 @@ const createGameBoard = function () {
     return coords;
   };
 
-  const addShipToBoard = (ship, coords) => {
+  const addShipToBoard = (p, ship, coords) => {
     coords.forEach((e) => {
-      domController.updateTile("ship", e.coordinates[0], e.coordinates[1]);
+      domController.updateTile(p, "ship", e.coordinates[0], e.coordinates[1]);
       e.tileContent.type = "ship";
       e.tileContent.value = ship;
     });
@@ -69,13 +71,16 @@ const createGameBoard = function () {
     let coords;
     try {
       coords = findCoordinates(x, y);
-      if (coords.type === "hit" || coords.type === "miss")
+      tile = coords.tileContent;
+      if (tile.type === "hit" || tile.type === "miss")
         throw new Error("already attacked this tile");
-      if (coords.type === "ship") {
-        coords.type = "hit";
-        coords.value.takeDamage();
+      if (tile.type === "ship") {
+        tile.type = "hit";
+        tile.value.takeDamage();
+        return true;
       } else {
-        coords.type = "miss";
+        tile.type = "miss";
+        return false;
       }
     } catch (e) {
       throw e;

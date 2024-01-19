@@ -9,10 +9,23 @@ const createGame = function (player1, player2) {
   const playerTwo = createPlayer("nagy gyerek", "ai", createGameBoard());
   const playerTwoGameBoard = playerTwo.getGameBoard();
   let currentPlayer = null;
+  let gameStarted = false;
+  let shipDirection = "horizontal"
+  let testField = document.getElementById("test-field")
+  testField.textContent = `ship direction: ${shipDirection}`;
+  document.addEventListener("keydown", (e) => {
+    console.log(e.key)
+    if (e.key === "r") changeShipDirection(); 
+  })
 
   const getPlayers = () => {
     return [playerOne, playerTwo];
   };
+
+  const changeShipDirection = () => {
+    shipDirection = shipDirection === "horizontal" ? "vertical" : "horizontal";
+    testField.textContent = `ship direction: ${shipDirection}`;
+  }
 
   const hasLost = (player) => {
     const ships = player.getShips();
@@ -22,14 +35,25 @@ const createGame = function (player1, player2) {
   };
 
   const initialize = () => {
+    currentPlayer = playerOne;
+
     createPlayerShips(playerOne);
     createPlayerShips(playerTwo);
-    // playerOne.placeShip(playerOne.getShips()[0], 1, 0, "horizontal");
 
-    domController.displayGameBoard(playerOneGameBoard, 1);
-    domController.displayGameBoard(playerTwoGameBoard, 2);
-    playerOne.placeShip(playerOne.getShips()[0], 0, 0, "vertical");
+    domController.displayGameBoard(playerOneGameBoard, 1, handleTileClicked);
+    domController.displayGameBoard(playerTwoGameBoard, 2, handleTileClicked);
+
   };
+
+  const handleTileClicked = (event) => {
+    const playerShips = currentPlayer.getShips();
+    const nextShip = currentPlayer.getNextShipToPlace();
+    if(nextShip > playerShips.length - 1) return
+    const targetCoords = event.target.dataset.coordinates.split("-");
+    currentPlayer.placeShip(currentPlayer.getPlayerNumber(), playerShips[nextShip], Number(targetCoords[1]), Number(targetCoords[0]), shipDirection )
+    // changeCurrentPlayer();
+  }
+
   // 1 x 4 , 2 x 3 , 3 x 2 , 4 x 1
   const createPlayerShips = (player) => {
     const ships = [];
@@ -39,6 +63,10 @@ const createGame = function (player1, player2) {
     });
     player.setShips(ships);
   };
+
+  const changeCurrentPlayer = () => {
+    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+  }
 
   return { getPlayers, hasLost, initialize };
 };

@@ -1,10 +1,16 @@
 const domController = require("../dom/dom");
+let nextPlayerNumber = 1;
 
 const createPlayer = function (name, type, gameBoard) {
   // add ai object if needed
   let ai = null;
   if (type === "ai") {
     ai = createAi();
+  }
+
+  let nextShipToPlace = 0;
+  const getNextShipToPlace = () => {
+    return nextShipToPlace;
   }
 
   const getGameBoard = () => {
@@ -23,6 +29,11 @@ const createPlayer = function (name, type, gameBoard) {
     return type;
   };
 
+  const playerNumber = nextPlayerNumber;
+  const getPlayerNumber = () => {
+    return playerNumber;
+  }
+
   let ships = [];
   const getShips = () => {
     return ships;
@@ -40,11 +51,20 @@ const createPlayer = function (name, type, gameBoard) {
     board.takeHit(x, y);
   };
 
-  const placeShip = (ship, x, y, direction) => {
-    gameBoard.addShip(ship, x, y, direction);
+  const placeShip = (p, ship, x, y, direction) => {
+    try {
+      gameBoard.addShip(p, ship, x, y, direction)
+      nextShipToPlace += 1;
+      domController.clearErrors();
+    }
+    catch(e) { domController.displayError(e); };
   };
 
+  nextPlayerNumber++;
+
   return {
+    getNextShipToPlace,
+    getPlayerNumber,
     getPlayerName,
     getPlayerType,
     getGameBoard,
