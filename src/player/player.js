@@ -2,12 +2,6 @@ const domController = require("../dom/dom");
 let nextPlayerNumber = 1;
 
 const createPlayer = function (name, type, gameBoard) {
-  // add ai object if needed
-  let ai = null;
-  if (type === "ai") {
-    ai = createAi();
-  }
-
   let nextShipToPlace = 0;
   const getNextShipToPlace = () => {
     return nextShipToPlace;
@@ -27,6 +21,10 @@ const createPlayer = function (name, type, gameBoard) {
   const playerType = type;
   const getPlayerType = () => {
     return type;
+  };
+
+  const isAi = () => {
+    return type === "ai";
   };
 
   const playerNumber = nextPlayerNumber;
@@ -60,6 +58,7 @@ const createPlayer = function (name, type, gameBoard) {
       gameBoard.addShip(p, ship, x, y, direction);
       nextShipToPlace += 1;
       domController.clearErrors();
+      return true;
     } catch (e) {
       domController.displayError(e);
     }
@@ -67,23 +66,6 @@ const createPlayer = function (name, type, gameBoard) {
 
   nextPlayerNumber++;
 
-  return {
-    getNextShipToPlace,
-    getPlayerNumber,
-    getPlayerName,
-    getPlayerType,
-    getGameBoard,
-    placeShip,
-    getShips,
-    addShip,
-    attackBoard,
-    setShips,
-    ai,
-  };
-};
-// added to player object if needed
-const createAi = function () {
-  // so Ai does not shoot same tile twice
   const shotTiles = [];
 
   const getShotTiles = () => {
@@ -96,15 +78,17 @@ const createAi = function () {
 
   const makeRandomMove = (gameBoard) => {};
 
-  const placeRandomShip = (ship, gameBoard) => {
+  const placeRandomShip = (p, ship) => {
     const maxNumber = 10;
     const x = Math.floor(Math.random() * maxNumber);
     const y = Math.floor(Math.random() * maxNumber);
+    const randomNum = Math.random();
 
+    const direction = ["horizontal", "vertical"][randomNum < 0.5 ? 0 : 1];
     try {
-      gameBoard.addShip(ship, x, y, "horizontal");
+      if (placeShip(p, ship, x, y, direction)) return true;
     } catch {
-      placeRandomShip(ship, gameBoard);
+      return false;
     }
   };
 
@@ -123,7 +107,23 @@ const createAi = function () {
     }
   };
 
-  return { placeRandomShip, makeRandomMove, registerShotTile, getShotTiles };
+  return {
+    getNextShipToPlace,
+    getPlayerNumber,
+    getPlayerName,
+    getPlayerType,
+    getGameBoard,
+    placeShip,
+    getShips,
+    addShip,
+    attackBoard,
+    setShips,
+    isAi,
+    placeRandomShip,
+    makeRandomMove,
+    registerShotTile,
+    getShotTiles,
+  };
 };
 
 module.exports = createPlayer;

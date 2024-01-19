@@ -51,6 +51,10 @@ body {
   background-color: darkgray;
 }
 
-.shot {
+.shipHit {
   background-color: tomato;
+}
+
+.shot {
+  background-color: white;
 }

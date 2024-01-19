@@ -26,14 +26,54 @@ const createGameBoard = function () {
     const coords = calculateShipCoordinates(length, x, y, direction);
 
     if (coords === null) {
-      // Handle invalid move
       throw new Error("out of bounds");
     } else if (coords.some((tile) => tile.tileContent.type === "ship")) {
       throw new Error("ship already present on selected tile");
     }
+    // else if (
+    //   coords.some((tile) => {
+    //     conso
+    //     console.log(shipInSurroundingTiles(tile));
+    //     shipInSurroundingTiles(tile);
+    //   })
+    // )
+    else if (coords.some((tile) => shipInSurroundingTiles(tile))) {
+      throw new Error("must be atleast 1 tile between ships");
+    }
 
     ships.push(ship);
     addShipToBoard(p, ship, coords);
+  };
+
+  const shipInSurroundingTiles = (tile) => {
+    const coordinates = tile.coordinates;
+    const adjacentTiles = getAdjacentTiles(
+      getCoordinates(),
+      coordinates[0],
+      coordinates[1]
+    );
+    if (adjacentTiles.some((tile) => tile.tileContent.type == "ship")) {
+      return true;
+    }
+    return false;
+  };
+
+  const getAdjacentTiles = (matrix, rowIndex, columnIndex) => {
+    const adjacentIndices = [];
+
+    for (let i = rowIndex - 1; i <= rowIndex + 1; i++) {
+      for (let j = columnIndex - 1; j <= columnIndex + 1; j++) {
+        // Check if the indices are within bounds
+        if (i >= 0 && i < matrix.length && j >= 0 && j < matrix[i].length) {
+          // Exclude the current index
+          if (!(i === rowIndex && j === columnIndex)) {
+            adjacentIndices.push(findCoordinates(i, j));
+          }
+        }
+      }
+    }
+
+    return adjacentIndices;
   };
 
   const calculateShipCoordinates = (length, x, y, direction) => {
@@ -76,6 +116,7 @@ const createGameBoard = function () {
       if (tile.type === "ship") {
         tile.type = "hit";
         tile.value.takeDamage();
+        domController.updateTile(p, "shipHit", x, y);
         return true;
       } else {
         tile.type = "miss";
@@ -84,7 +125,7 @@ const createGameBoard = function () {
         return false;
       }
     } catch (e) {
-      throw e;
+      domController.displayError(e);
     }
   };
 

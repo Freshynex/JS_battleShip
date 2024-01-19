@@ -11,8 +11,6 @@ const createGame = function (player1, player2) {
     startGame();
   });
 
-  testField.textContent = `ship direction: ${shipDirection}`;
-
   const initialize = () => {
     allShipsPlaced = false;
 
@@ -22,15 +20,37 @@ const createGame = function (player1, player2) {
 
     domController.displayGameBoard(playerOneGameBoard, 1, handleTileClicked);
     domController.displayGameBoard(playerTwoGameBoard, 2, handleTileClicked);
+    if (playerTwo.isAi()) placeAiShips();
+  };
+
+  const placeAiShips = () => {
+    const playerShips = playerOne.getShips();
+    // next ship index ( initially 0 )
+    let nextShip = 0;
+    // check if placeRandomShip was succesful
+    let result;
+    console.log(nextShip < playerShips.length - 1);
+    while (nextShip < playerShips.length - 1) {
+      nextShip = playerTwo.getNextShipToPlace();
+
+      while (!result) {
+        result = playerTwo.placeRandomShip(
+          playerTwo.getPlayerNumber(),
+          playerShips[nextShip]
+        );
+      }
+      result = null;
+    }
   };
 
   const startGame = () => {
     if (!allShipsPlacedCheck()) {
-      console.log("place all sips first");
+      domController.displayError("place all ships first!");
       return;
     }
 
     gameStarted = true;
+    testField.textContent = "game in progress";
     console.log("game started!");
   };
 
@@ -62,8 +82,10 @@ const createGame = function (player1, player2) {
   });
   const changeShipDirection = () => {
     shipDirection = shipDirection === "horizontal" ? "vertical" : "horizontal";
-    testField.textContent = `ship direction: ${shipDirection}`;
+    testField.textContent = `placing ships, ship direction: ${shipDirection}`;
   };
+
+  testField.textContent = `placing ships, ship direction: ${shipDirection}`;
 
   const handleTileClicked = (event) => {
     // handle player current ship index

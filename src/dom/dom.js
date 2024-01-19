@@ -3,11 +3,15 @@ const domController = (function () {
   const playerTwoBoardContainer = document.querySelector("#playerTwoBoard");
   const errorField = document.getElementById("error");
 
-  const displayGameBoard = (gameBoard, player, tileClickedFunction) => {
+  const displayGameBoard = (
+    gameBoard,
+    player,
+    tileClickedFunction,
+    tileHoverFunction
+  ) => {
     let container =
       player === 1 ? playerOneBoardContainer : playerTwoBoardContainer;
     const tiles = gameBoard.getCoordinates();
-    console.log(tiles);
     let length = 0;
 
     tiles.forEach((row, rowIndex) => {
@@ -17,14 +21,13 @@ const domController = (function () {
         tileDiv.id = `p${player}-${colIndex}${rowIndex}`;
         tileDiv.dataset.coordinates = `${rowIndex}-${colIndex}`;
         tileDiv.addEventListener("click", tileClickedFunction);
+        tileDiv.addEventListener("hover", tileHoverFunction);
         // y          // x
-        tileDiv.textContent = col.type;
         // `${colIndex} - ${rowIndex}`;
         length += 1;
         container.appendChild(tileDiv);
       });
     });
-    console.log(length);
   };
 
   const displayError = (e) => {
@@ -43,7 +46,6 @@ const domController = (function () {
 
   const updateTile = (p, newValue, x, y) => {
     let tile = findTileNode(p, x, y);
-    console.log(tile);
     tile.className = `tile ${newValue}`;
     tile.textContent = newValue;
   };
