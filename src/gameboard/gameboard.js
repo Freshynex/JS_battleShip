@@ -76,6 +76,11 @@ const createGameBoard = function () {
     return adjacentIndices;
   };
 
+  const allShipsSunk = () => {
+    if (ships.every((ship) => ship.getSunkStatus())) return true;
+    return false;
+  };
+
   const calculateShipCoordinates = (length, x, y, direction) => {
     const coords = [];
 
@@ -117,10 +122,16 @@ const createGameBoard = function () {
         tile.type = "hit";
         tile.value.takeDamage();
         domController.updateTile(p, "shipHit", x, y);
+        console.log("gameboard belongs to: " + p);
+        console.log("ship hp: " + tile.value.getHp());
+        console.log("ship sunk: " + tile.value.getSunkStatus());
+        domController.clearErrors();
+
         return true;
       } else {
         tile.type = "miss";
         domController.updateTile(p, "shot", x, y);
+        domController.clearErrors();
 
         return false;
       }
@@ -129,7 +140,14 @@ const createGameBoard = function () {
     }
   };
 
-  return { getCoordinates, findCoordinates, getShips, addShip, takeHit };
+  return {
+    getCoordinates,
+    findCoordinates,
+    getShips,
+    addShip,
+    allShipsSunk,
+    takeHit,
+  };
 };
 
 module.exports = createGameBoard;

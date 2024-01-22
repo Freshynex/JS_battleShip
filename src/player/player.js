@@ -38,19 +38,27 @@ const createPlayer = function (name, type, gameBoard) {
   };
 
   const setShips = (inputShips) => {
-    ships = inputShips;
+    ships = [...inputShips];
   };
 
   const addShip = (ship) => {
     ships.push(ship);
   };
 
+  const allShipsSunk = () => {
+    return gameBoard.allShipsSunk();
+    // return ships.every((ship) => getSunkStatus(ship));
+  };
+
   const attackBoard = (p, board, x, y) => {
-    console.log(p);
+    // console.log(p);
     // console.log(
     //   `attacking board of ${p.getPlayerNumber()}, at x: ${x} and y: ${y}`
     // );
-    board.takeHit(p, x, y);
+    if (board.takeHit(p, x, y)) {
+      return true;
+    }
+    return false;
   };
 
   const placeShip = (p, ship, x, y, direction) => {
@@ -116,6 +124,7 @@ const createPlayer = function (name, type, gameBoard) {
     placeShip,
     getShips,
     addShip,
+    allShipsSunk,
     attackBoard,
     setShips,
     isAi,

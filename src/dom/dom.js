@@ -40,6 +40,8 @@ const domController = (function () {
     return tile;
   };
 
+  const displayNextShipLength = (length) => {};
+
   const clearErrors = () => {
     errorField.textContent = "";
   };

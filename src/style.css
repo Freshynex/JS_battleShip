@@ -45,16 +45,95 @@ body {
 
 .tile {
   background-color: wheat;
+  /* transition: background-color 0.5s ease; */
+  animation: 0.3s cubic-bezier(0.42, 1.63, 1, 1.31) forwards;
+  animation-iteration-count: 1;
 }
 
 .ship {
-  background-color: darkgray;
+  animation-name: ship;
 }
 
 .shipHit {
-  background-color: tomato;
+  animation-name: shiphit, smoking;
+  animation-iteration-count: 1, infinite;
+  position: relative;
+}
+
+.shipHit::after {
+  content: "";
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 4px;
+  transform: rotate(10deg);
+  position: absolute;
+  box-shadow: 0px 0px 48px 24px rgba(0, 0, 0, 1);
+  animation: 5s linear infinite;
+  pointer-events: none;
+
+  animation-name: smokeflight;
+}
+
+.shipHit::after {
+  right: 4px;
 }
 
 .shot {
   background-color: white;
+}
+
+@keyframes smokeflight {
+  /* 0% {
+    bottom: 12px;
+    width: 24px;
+  }
+
+  100% {
+    bottom: 48px;
+    width: 4px;
+  } */
+  0% {
+    transform: rotate(0deg) translateY(0px);
+    opacity: 1;
+    filter: blur(1px);
+    height: 12px;
+  }
+  100% {
+    transform: rotate(45deg) translateY(-200px);
+    opacity: 0;
+    filter: blur(20px);
+    height: 36px;
+  }
+}
+
+@keyframes shiphit {
+  0% {
+    background-color: brown;
+  }
+
+  50% {
+    background-color: dimgrey;
+  }
+
+  100% {
+    background-color: darkred;
+  }
+}
+
+@keyframes smoking {
+  0% {
+    box-shadow: 0;
+  }
+
+  100% {
+    box-shadow: -4px -59px 25px 20px rgba(0, 0, 0, 0.55) inset;
+  }
+}
+
+@keyframes ship {
+  0% {
+  }
+
+  100% {
+    background-color: darkgray;
+  }
 }

@@ -4,23 +4,46 @@ const createGameBoard = require("../gameboard/gameboard.js");
 const createShip = require("../ship/ship.js");
 
 const createGame = function (player1, player2) {
+  let gameStarted = false;
+  let winner = null;
+  let currentPlayer = null;
+  let nextShipIndex;
+  const playerOne = createPlayer("fasz janos", "human", createGameBoard());
+  const playerOneGameBoard = playerOne.getGameBoard();
+  const playerTwo = createPlayer("nagy gyerek", "ai", createGameBoard());
+  const playerTwoGameBoard = playerTwo.getGameBoard();
+  const getPlayers = () => {
+    return [playerOne, playerTwo];
+  };
+
   let allShipsPlaced = false;
   let testField = document.getElementById("test-field");
   let startBtn = document.getElementById("startBtn");
   startBtn.addEventListener("click", () => {
     startGame();
   });
+  let shipLengthContainer = document.getElementById("nextShipField");
 
   const initialize = () => {
     allShipsPlaced = false;
+    gameStarted = false;
 
     currentPlayer = playerOne;
     createPlayerShips(playerOne);
     createPlayerShips(playerTwo);
-
+    shipLengthContainer.textContent = `next ship length: ${getNextShipLength()}`;
     domController.displayGameBoard(playerOneGameBoard, 1, handleTileClicked);
     domController.displayGameBoard(playerTwoGameBoard, 2, handleTileClicked);
     if (playerTwo.isAi()) placeAiShips();
+  };
+
+  const getNextShipLength = () => {
+    nextShipIndex = currentPlayer.getNextShipToPlace();
+    if (!currentPlayer.getShips()[nextShipIndex]) return;
+    let nextShipLength = currentPlayer
+      .getShips()
+      [nextShipIndex].getShipLength();
+    return nextShipLength;
   };
 
   const placeAiShips = () => {
@@ -54,21 +77,9 @@ const createGame = function (player1, player2) {
     console.log("game started!");
   };
 
-  let gameStarted = false;
-
-  let currentPlayer = null;
-  const playerOne = createPlayer("fasz janos", "human", createGameBoard());
-  const playerOneGameBoard = playerOne.getGameBoard();
-  const playerTwo = createPlayer("nagy gyerek", "ai", createGameBoard());
-  const playerTwoGameBoard = playerTwo.getGameBoard();
-  const getPlayers = () => {
-    return [playerOne, playerTwo];
-  };
-  const hasLost = (player) => {
-    const ships = player.getShips();
-    if (ships) {
-      return ships.every((e) => e.getSunkStatus());
-    }
+  const endGame = () => {
+    winner = currentPlayer;
+    testField.textContent = `${winner.getPlayerName()} wins`;
   };
 
   const allShipsPlacedCheck = () => {
@@ -109,19 +120,31 @@ const createGame = function (player1, player2) {
       Number(targetCoords[0]),
       shipDirection
     );
+    shipLengthContainer.textContent = getNextShipLength()
+      ? `next ship length: ${getNextShipLength()}`
+      : "";
+
     // changeCurrentPlayer();
   };
 
   const handleAttackClick = (event) => {
     const targetCoords = event.target.dataset.coordinates.split("-");
-    const targetPlayer = getPlayers().filter((p) => p !== currentPlayer);
-    const targetGameBoard = targetPlayer[0].getGameBoard();
-    currentPlayer.attackBoard(
-      targetPlayer[0].getPlayerNumber(),
-      targetGameBoard,
-      Number(targetCoords[1]),
-      Number(targetCoords[0])
-    );
+    const targetPlayer = getPlayers().filter((p) => p !== currentPlayer)[0];
+    const targetGameBoard = targetPlayer.getGameBoard();
+    if (
+      currentPlayer.attackBoard(
+        targetPlayer.getPlayerNumber(),
+        targetGameBoard,
+        Number(targetCoords[1]),
+        Number(targetCoords[0])
+      )
+    ) {
+      console.log("player lost: " + targetPlayer.allShipsSunk());
+      targetPlayer.allShipsSunk()
+        ? endGame()
+        : console.log("- - - NEXT ROUND - - -");
+      // if (targetPlayer.allShipsSunk()) endGame();
+    }
   };
   // 1 x 4 , 2 x 3 , 3 x 2 , 4 x 1
   const createPlayerShips = (player) => {
@@ -137,7 +160,7 @@ const createGame = function (player1, player2) {
     currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
   };
 
-  return { getPlayers, hasLost, initialize };
+  return { getPlayers, initialize };
 };
 
 module.exports = createGame;
